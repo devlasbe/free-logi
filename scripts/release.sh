@@ -42,7 +42,7 @@ read -r -p "$TAG ($BUILD) 커밋·push하고 릴리즈를 올릴까? [y/N] " ANS
 
 plist "Set CFBundleShortVersionString $VERSION"
 plist "Set CFBundleVersion $BUILD"
-git commit -q -m "Release $TAG" -- "$PLIST"
+git commit -q -m "chore: $TAG" -- "$PLIST"
 git tag "$TAG"
 git push origin main "$TAG"
-gh release create "$TAG" build/FreeLogi.dmg --title "$TAG" --generate-notes
+gh release create "$TAG" build/FreeLogi.dmg --title "FreeLogi $VERSION" --generate-notes
