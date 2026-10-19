@@ -11,7 +11,7 @@
 
 <p align="center">English | <a href="README.ko.md">한국어</a></p>
 
-The app UI is available in Korean only. The guide below includes the Korean labels.
+The app UI follows your macOS language: English or Korean.
 
 ## Why FreeLogi
 
@@ -29,52 +29,52 @@ Open the downloaded DMG. Drag FreeLogi to Applications, then open it from there.
 
 ### Grant permissions
 
-On the first launch, select `허용하러 가기` (Open settings) for each permission. Enable FreeLogi in **System Settings → Privacy & Security → Input Monitoring** and **Accessibility**. Input Monitoring lets the app read button presses. Accessibility lets it replace the original action with keyboard input.
+On the first launch, select `Open Settings` for each permission. Enable FreeLogi in **System Settings → Privacy & Security → Input Monitoring** and **Accessibility**. Input Monitoring lets the app read button presses. Accessibility lets it replace the original action with keyboard input.
 
 The app restarts when it detects newly granted Input Monitoring access. Once both permissions are enabled, the mapping screen appears.
 
-![Permission setup](docs/images/permissions.png)
+![Permission setup](docs/images/en/permissions.png)
 
 ### Create and switch profiles
 
-Click `+` at the bottom left. Enter a profile name in `이름` (Name), then press Return. Selecting a profile in the sidebar activates it. The checkmark and `사용 중` (Active) label show which profile is in use.
+Click `+` at the bottom left. Enter a profile name in `Name`, then press Return. Selecting a profile in the sidebar activates it. The checkmark and `Active` label show which profile is in use.
 
 You can also switch profiles from the menu bar. Profiles and mappings are saved automatically.
-Choose “FreeLogi 정보” from the menu bar to see the app version, author and GitHub link.
+Choose “About FreeLogi” from the menu bar to see the app version, author and GitHub link.
 
-![Profiles and button mappings](docs/images/settings.png)
+![Profiles and button mappings](docs/images/en/settings.png)
 
-![Menu bar profile selection preview](docs/images/menu.png)
+![Menu bar profile selection preview](docs/images/en/menu.png)
 
 ### Add a button
 
-Click `버튼 추가` (Add button). Wait while `준비 중…` (Preparing…) is shown.
+Click `Add Button`. Wait while `Getting Ready…` is shown.
 
-![Preparing to capture a button](docs/images/capture-preparing.png)
+![Preparing to capture a button](docs/images/en/capture-preparing.png)
 
-When `마우스 버튼을 누르세요` (Press a mouse button) appears, press the button you want to map once. Press Esc to cancel.
+When `Press a Mouse Button` appears, press the button you want to map once. Press Esc to cancel.
 
-![Ready to capture a button](docs/images/capture.png)
+![Ready to capture a button](docs/images/en/capture.png)
 
 ### Rename a button
 
-New buttons receive numbered names, such as `버튼 1` (Button 1). Edit the name in the `버튼` (Button) column and press Return. The raw button number or control ID stays visible next to the name.
+New buttons receive numbered names, such as `Button 1`. Edit the name in the `Button` column and press Return. The raw button number or control ID stays visible next to the name.
 
 ### Assign keys
 
-After a button is recognized, press the shortcut you want to assign, such as ⌘C. To change it later, click its cell in the `키` (Key) column and press a new shortcut. Press Esc to cancel recording.
+After a button is recognized, press the shortcut you want to assign, such as ⌘C. To change it later, click its cell in the `Key` column and press a new shortcut. Press Esc to cancel recording.
 
 Mappings support a key with ⌘, ⌥, ⌃ and ⇧ modifiers. Pressing the mapped button sends that shortcut to the active app in place of its original action.
 
 ### Set directional gestures
 
-For a button that supports HID++ raw movement, choose a direction in the `동작` (Action) column and assign a shortcut. Hold the mouse button, move the mouse up, down, left or right, then release it.
+For a button that supports HID++ raw movement, choose a direction in the `Action` column and assign a shortcut. Hold the mouse button, move the mouse up, down, left or right, then release it.
 
 To map another direction, add the same button again and choose an unused direction. The direction selector is disabled for buttons without raw movement support.
 
 ### Launch at login
 
-Enable `로그인 시 실행` (Launch at login) at the bottom of the settings window.
+Enable `Launch at Login` at the bottom of the settings window.
 
 ### Delete mappings and profiles
 

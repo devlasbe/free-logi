@@ -11,7 +11,7 @@
 
 <p align="center"><a href="README.md">English</a> | 한국어</p>
 
-앱 UI는 한국어로만 제공됩니다.
+앱 UI는 macOS 언어에 따라 한국어 또는 영어로 나옵니다.
 
 ## 만든 이유
 
