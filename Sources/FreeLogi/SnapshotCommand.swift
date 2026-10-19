@@ -84,8 +84,8 @@ private func makeSampleStore() throws -> ProfileStore {
     for (button, keyCode, modifiers) in samples {
         try store.setBinding(profileID: basicID, button: button, keys: KeyCombo(keyCode: keyCode, modifiers: modifiers))
     }
-    try store.add(name: "웹 브라우징")
-    try store.add(name: "코딩")
+    try store.add(name: String(localized: "웹 브라우징"))
+    try store.add(name: String(localized: "코딩"))
     return store
 }
 

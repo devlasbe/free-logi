@@ -21,7 +21,7 @@ private extension KeyCombo {
 // 프로필 목록에서 고른 프로필이 곧 활성 프로필이다(메뉴바에서 바꿔도 같은 값을 본다).
 @MainActor
 final class SettingsModel: ObservableObject {
-    private static let newProfilePrefix = "프로필"
+    private static let newProfilePrefix = String(localized: "프로필")
 
     @Published private(set) var state: ProfileStoreState
     @Published private(set) var pendingAction: BindingID?

@@ -8,15 +8,15 @@ enum Permission: CaseIterable {
 
     var title: String {
         switch self {
-        case .inputMonitoring: return "입력 모니터링"
-        case .accessibility: return "손쉬운 사용"
+        case .inputMonitoring: return String(localized: "입력 모니터링")
+        case .accessibility: return String(localized: "손쉬운 사용")
         }
     }
 
     var reason: String {
         switch self {
-        case .inputMonitoring: return "마우스 버튼 입력을 읽는 데 필요합니다"
-        case .accessibility: return "버튼의 원래 동작을 막고 키 입력을 보내는 데 필요합니다"
+        case .inputMonitoring: return String(localized: "마우스 버튼 입력을 읽는 데 필요합니다")
+        case .accessibility: return String(localized: "버튼의 원래 동작을 막고 키 입력을 보내는 데 필요합니다")
         }
     }
 
@@ -40,7 +40,7 @@ enum Permission: CaseIterable {
     }
 
     func statusLine(granted: Bool) -> String {
-        let status = granted ? "허용" : "미허용"
+        let status = granted ? String(localized: "허용") : String(localized: "미허용")
         return "\(title): \(status)"
     }
 

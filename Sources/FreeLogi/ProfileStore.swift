@@ -26,7 +26,7 @@ final class ProfileStore {
             state = try ProfileStore.decoder.decode(ProfileStoreState.self, from: data)
         } else {
             // 파일 없으면 기본 프로필 생성
-            let profile = Profile(id: UUID(), name: "기본", bindings: [])
+            let profile = Profile(id: UUID(), name: String(localized: "기본"), bindings: [])
             state = ProfileStoreState(profiles: [profile], activeID: profile.id)
         }
     }

@@ -70,8 +70,8 @@ struct Profile: Codable, Identifiable, Equatable {
     var nextButtonName: String {
         let usedNames = Set(buttonNames.values)
         var number = 1
-        while usedNames.contains("버튼 \(number)") { number += 1 }
-        return "버튼 \(number)"
+        while usedNames.contains(String(localized: "버튼 \(number)")) { number += 1 }
+        return String(localized: "버튼 \(number)")
     }
 
     func buttonName(for button: ButtonID) -> String {

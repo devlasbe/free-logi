@@ -48,7 +48,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             menu.addItem(reasonItem)
 
             let settingsItem = NSMenuItem(
-                title: "\(permission.title) 설정 열기",
+                title: String(localized: "\(permission.title) 설정 열기"),
                 action: #selector(openPermissionSettings(_:)),
                 keyEquivalent: ""
             )
@@ -62,16 +62,16 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
         // 프로필을 못 읽었으면(store 없음) 설정 창을 열 수 없다.
         let settingsAction = profileState == nil ? nil : #selector(openSettings)
-        let appSettingsItem = NSMenuItem(title: "설정…", action: settingsAction, keyEquivalent: ",")
+        let appSettingsItem = NSMenuItem(title: String(localized: "설정…"), action: settingsAction, keyEquivalent: ",")
         appSettingsItem.target = self
         menu.addItem(appSettingsItem)
 
-        let aboutItem = NSMenuItem(title: "FreeLogi 정보", action: #selector(openAbout), keyEquivalent: "")
+        let aboutItem = NSMenuItem(title: String(localized: "FreeLogi 정보"), action: #selector(openAbout), keyEquivalent: "")
         aboutItem.target = self
         menu.addItem(aboutItem)
 
         let quitItem = NSMenuItem(
-            title: "종료",
+            title: String(localized: "종료"),
             action: #selector(NSApplication.terminate(_:)),
             keyEquivalent: "q"
         )

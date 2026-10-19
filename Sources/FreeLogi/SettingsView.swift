@@ -161,7 +161,7 @@ struct SettingsView: View {
         )
         return Picker("동작", selection: selection) {
             ForEach(model.availableGestures(for: row.button), id: \.self) { gesture in
-                Text(gesture?.displayName ?? "클릭")
+                Text(gesture?.displayName ?? String(localized: "클릭"))
                     .tag(gesture)
                     .disabled(!model.canSelect(gesture, for: row.id))
             }
@@ -173,7 +173,7 @@ struct SettingsView: View {
 
     private func keyButton(for row: MappingRow) -> some View {
         let isRecording = model.recordingAction == row.id
-        let label = isRecording ? "키를 누르세요 (Esc 취소)" : (row.keys?.displayString ?? "")
+        let label = isRecording ? String(localized: "키를 누르세요 (Esc 취소)") : (row.keys?.displayString ?? "")
         return Button { model.beginRecording(row.button, gesture: row.gesture) } label: {
             Text(label)
                 .frame(maxWidth: .infinity)
@@ -231,10 +231,10 @@ struct CapturePrompt: View {
             VStack(spacing: 12) {
                 HStack {
                     if !isReady { ProgressView().controlSize(.small) }
-                    Text(isReady ? "마우스 버튼을 누르세요" : "준비 중…")
+                    Text(isReady ? String(localized: "마우스 버튼을 누르세요") : String(localized: "준비 중…"))
                         .font(.headline)
                 }
-                Text(isReady ? "매핑할 버튼을 한 번 누르면 인식됩니다" : "잠시만 기다려 주세요")
+                Text(isReady ? String(localized: "매핑할 버튼을 한 번 누르면 인식됩니다") : String(localized: "잠시만 기다려 주세요"))
                     .font(.callout)
                     .foregroundStyle(.secondary)
                 Button("취소 (Esc)", action: cancel)

@@ -15,6 +15,7 @@ BIN_PATH=$(swift build -c release "$@" --show-bin-path)
 rm -rf "$APP_PATH"
 mkdir -p "$APP_PATH/Contents/MacOS" "$APP_PATH/Contents/Resources"
 cp "$BIN_PATH/$APP_NAME" "$APP_PATH/Contents/MacOS/$APP_NAME"
+cp -R Resources/en.lproj Resources/ko.lproj "$APP_PATH/Contents/Resources/"
 cp Resources/Info.plist "$APP_PATH/Contents/Info.plist"
 # 버전은 번들 사본에만 반영
 if [[ -n "${APP_VERSION:-}" ]]; then
