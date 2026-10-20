@@ -72,6 +72,10 @@ For a button that supports HID++ raw movement, choose a direction in the `Action
 
 To map another direction, add the same button again and choose an unused direction. The direction selector is disabled for buttons without raw movement support.
 
+### Reverse scrolling
+
+Enable `Reverse vertical scrolling` or `Reverse horizontal scrolling` at the bottom of the settings window. Only mouse wheel scrolling is reversed; trackpad scrolling stays as macOS sets it. The setting applies to every profile.
+
 ### Launch at login
 
 Enable `Launch at Login` at the bottom of the settings window.
