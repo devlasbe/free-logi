@@ -16,6 +16,21 @@ final class ProfileStoreTests: XCTestCase {
         super.tearDown()
     }
 
+    func testScrollReversalPersistsAcrossProfiles() throws {
+        let store = try ProfileStore(fileURL: tmpURL)
+        XCTAssertFalse(store.state.reverseVerticalScroll)
+        XCTAssertFalse(store.state.reverseHorizontalScroll)
+        for (vertical, horizontal) in [(true, false), (false, true), (true, true), (false, false)] {
+            try store.setScrollReversal(vertical: vertical, horizontal: horizontal)
+            let profile = try store.add(name: "다른 프로필")
+            try store.setActive(id: profile.id)
+            let reloaded = try ProfileStore(fileURL: tmpURL)
+            XCTAssertEqual(reloaded.state, store.state)
+            XCTAssertEqual(reloaded.state.reverseVerticalScroll, vertical)
+            XCTAssertEqual(reloaded.state.reverseHorizontalScroll, horizontal)
+        }
+    }
+
     // 저장 후 재로드 동일성 검증
     func testRoundTrip() throws {
         let store = try ProfileStore(fileURL: tmpURL)
@@ -65,6 +80,8 @@ final class ProfileStoreTests: XCTestCase {
         let state = try JSONDecoder().decode(ProfileStoreState.self, from: Data(json.utf8))
         XCTAssertEqual(state.profiles[0].bindings, [ButtonBinding(button: .hidpp(83), keys: KeyCombo(keyCode: 80, modifiers: 0))])
         XCTAssertNil(state.profiles[0].bindings[0].gesture)
+        XCTAssertFalse(state.reverseVerticalScroll)
+        XCTAssertFalse(state.reverseHorizontalScroll)
     }
 
     func testDirectionsCoexistAndUpdateOrRemoveIndependently() throws {

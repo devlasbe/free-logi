@@ -143,7 +143,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     // 활성 프로필이나 매핑이 바뀌면 엔진과 메뉴가 따라간다.
     private func profilesDidChange() {
-        if restartTask == nil { engine?.apply(store?.activeProfile) }
+        if restartTask == nil {
+            engine?.apply(store?.activeProfile)
+            applyScrollReversal()
+        }
         rebuildMenu()
     }
 
@@ -288,8 +291,14 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         engine.onControlsChanged = { [weak self] in self?.settingsWindow?.model.objectWillChange.send() }
         self.engine = engine
         engine.apply(store.activeProfile)
+        applyScrollReversal()
         engine.start()
         printToStandardError("engine: ready (프로필 \(store.fileURL.path))")
+    }
+
+    private func applyScrollReversal() {
+        guard let state = store?.state else { return }
+        engine?.applyScrollReversal(vertical: state.reverseVerticalScroll, horizontal: state.reverseHorizontalScroll)
     }
 
     // SIGINT·SIGTERM은 일반 종료와 같은 길로 끝낸다(divert를 풀고). SIGHUP은 profiles.json을 다시 읽어 반영한다(디버그).

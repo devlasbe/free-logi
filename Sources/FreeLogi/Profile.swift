@@ -92,4 +92,25 @@ struct Profile: Codable, Identifiable, Equatable {
 struct ProfileStoreState: Codable, Equatable {
     var profiles: [Profile]
     var activeID: UUID
+    var reverseVerticalScroll = false
+    var reverseHorizontalScroll = false
+
+    init(profiles: [Profile], activeID: UUID, reverseVerticalScroll: Bool = false, reverseHorizontalScroll: Bool = false) {
+        self.profiles = profiles
+        self.activeID = activeID
+        self.reverseVerticalScroll = reverseVerticalScroll
+        self.reverseHorizontalScroll = reverseHorizontalScroll
+    }
+
+    private enum CodingKeys: String, CodingKey {
+        case profiles, activeID, reverseVerticalScroll, reverseHorizontalScroll
+    }
+
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        profiles = try container.decode([Profile].self, forKey: .profiles)
+        activeID = try container.decode(UUID.self, forKey: .activeID)
+        reverseVerticalScroll = try container.decodeIfPresent(Bool.self, forKey: .reverseVerticalScroll) ?? false
+        reverseHorizontalScroll = try container.decodeIfPresent(Bool.self, forKey: .reverseHorizontalScroll) ?? false
+    }
 }

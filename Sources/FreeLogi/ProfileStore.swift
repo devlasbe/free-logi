@@ -74,6 +74,12 @@ final class ProfileStore {
         try save()
     }
 
+    func setScrollReversal(vertical: Bool, horizontal: Bool) throws {
+        state.reverseVerticalScroll = vertical
+        state.reverseHorizontalScroll = horizontal
+        try save()
+    }
+
     func setActive(id: UUID) throws {
         state.activeID = id
         try save()

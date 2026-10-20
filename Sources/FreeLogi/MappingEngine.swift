@@ -27,6 +27,7 @@ final class MappingEngine {
     // 지금 눌려 있는 버튼이 누를 때 보낸 키. 뗄 때 같은 키를 뗀다(그 사이 매핑이 바뀌어도).
     private var heldKeys: [ButtonID: KeyCombo] = [:]
     private var tap: ButtonTap?
+    private var scrollTap: ScrollTap?
     private var manager: HIDPPManager?
     private var wakeObserver: NSObjectProtocol?
     private var isStopped = false
@@ -91,6 +92,8 @@ final class MappingEngine {
         releaseHeldKeys()
         tap?.stop()
         tap = nil
+        scrollTap?.stop()
+        scrollTap = nil
         for channel in channels {
             let controls = controlsByChannel[ObjectIdentifier(channel)] ?? []
             await applyDiverts(on: channel, controls: controls)
@@ -120,9 +123,25 @@ final class MappingEngine {
         syncAllChannels()
     }
 
+    func applyScrollReversal(vertical: Bool, horizontal: Bool) {
+        if isStopped { return }
+        if !vertical && !horizontal {
+            scrollTap?.stop()
+            scrollTap = nil
+            return
+        }
+        if scrollTap == nil {
+            scrollTap = ScrollTap()
+            if scrollTap == nil { log("스크롤 탭을 만들지 못했다(손쉬운 사용 권한 없음)") }
+        }
+        scrollTap?.reverseVertical = vertical
+        scrollTap?.reverseHorizontal = horizontal
+    }
+
     // 주기적으로 부른다. 탭이 시스템에 의해 꺼졌으면 다시 켠다.
     func reenableTapIfNeeded() {
         tap?.reenableIfDisabled()
+        scrollTap?.reenableIfDisabled()
     }
 
     // 매핑된 버튼이면 true(원래 동작을 삼킨다). down에 키를 누르고 up에 뗀다.

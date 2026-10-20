@@ -242,6 +242,10 @@ final class SettingsModel: ObservableObject {
         save { try store.removeBinding(profileID: state.activeID, button: button, gesture: gesture) }
     }
 
+    func setScrollReversal(vertical: Bool, horizontal: Bool) {
+        save { try store.setScrollReversal(vertical: vertical, horizontal: horizontal) }
+    }
+
     // MARK: - 로그인 시 실행
 
     func setLaunchesAtLogin(_ enabled: Bool) {

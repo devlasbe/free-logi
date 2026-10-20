@@ -1,1 +1,4 @@
 /* Korean keys fall back to their original text. */
+
+"세로 스크롤 반전" = "세로 스크롤 반전";
+"가로 스크롤 반전" = "가로 스크롤 반전";

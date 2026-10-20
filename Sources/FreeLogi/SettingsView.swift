@@ -8,7 +8,7 @@ private let contentPadding: CGFloat = 20
 private let ACTIVE_BADGE_HORIZONTAL_PADDING: CGFloat = 8
 private let ACTIVE_BADGE_VERTICAL_PADDING: CGFloat = 4
 
-// 왼쪽 프로필 목록, 오른쪽 선택한 프로필의 매핑 표, 아래 로그인 시 실행.
+// 왼쪽 프로필 목록, 오른쪽 선택한 프로필의 매핑 표, 아래 앱 전체 설정.
 struct SettingsView: View {
     @ObservedObject var model: SettingsModel
     @State private var draftName = ""
@@ -201,13 +201,28 @@ struct SettingsView: View {
         }
     }
 
-    // MARK: - 로그인 시 실행
+    // MARK: - 앱 전체 설정
 
     private var footer: some View {
-        HStack {
+        VStack(alignment: .leading, spacing: 10) {
+            HStack(spacing: 20) {
+                Toggle("세로 스크롤 반전", isOn: Binding(
+                    get: { model.state.reverseVerticalScroll },
+                    set: { enabled in
+                        model.setScrollReversal(vertical: enabled, horizontal: model.state.reverseHorizontalScroll)
+                    }
+                ))
+                Toggle("가로 스크롤 반전", isOn: Binding(
+                    get: { model.state.reverseHorizontalScroll },
+                    set: { enabled in
+                        model.setScrollReversal(vertical: model.state.reverseVerticalScroll, horizontal: enabled)
+                    }
+                ))
+                Spacer()
+            }
+            .toggleStyle(.checkbox)
             Toggle("로그인 시 실행", isOn: loginBinding)
                 .toggleStyle(.checkbox)
-            Spacer()
         }
         .padding(.horizontal, contentPadding)
         .padding(.vertical, 10)

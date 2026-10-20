@@ -40,3 +40,6 @@
 "버튼 %lld" = "Button %lld";
 "웹 브라우징" = "Web Browsing";
 "코딩" = "Coding";
+
+"세로 스크롤 반전" = "Reverse vertical scrolling";
+"가로 스크롤 반전" = "Reverse horizontal scrolling";
