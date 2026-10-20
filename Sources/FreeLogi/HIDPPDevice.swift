@@ -53,10 +53,16 @@ final class HIDPPNode {
         self.productId = HIDPPNode.intProperty(device, kIOHIDProductIDKey)
         self.usagePage = usagePage
         self.usage = usage
-        self.channel = HIDPPChannel { frame in
-            let reportId = CFIndex(frame[0])
-            let result = IOHIDDeviceSetReport(device, kIOHIDReportTypeOutput, reportId, frame, frame.count)
-            return result == kIOReturnSuccess
+        let reportQueue = DispatchQueue(label: "kr.lasbe.freelogi.hidpp.output")
+        // 큐의 블록이 장치를 보유한다. output만 직렬 큐에서 보내고 input·채널 상태는 메인에 둔다.
+        nonisolated(unsafe) let outputDevice = device
+        self.channel = HIDPPChannel { frame, completion in
+            reportQueue.async {
+                let reportId = CFIndex(frame[0])
+                let result = IOHIDDeviceSetReport(outputDevice, kIOHIDReportTypeOutput, reportId, frame, frame.count)
+                let isSent = result == kIOReturnSuccess
+                Task { @MainActor in completion(isSent) }
+            }
         }
 
         self.reportBuffer = UnsafeMutablePointer<UInt8>.allocate(capacity: inputReportBufferSize)

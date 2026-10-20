@@ -16,9 +16,9 @@ final class HIDPPChannelTests: XCTestCase {
     }
 
     // request가 프레임을 보낼 때까지 양보한다.
-    private func waitForSentFrame() async {
+    private func waitForSentFrame(count: Int = 1) async {
         for _ in 0..<100 {
-            if !sentFrames.isEmpty { return }
+            if sentFrames.count >= count { return }
             await Task.yield()
         }
     }
@@ -110,6 +110,101 @@ final class HIDPPChannelTests: XCTestCase {
         } catch {
             XCTAssertEqual(error as? HIDPPError, .sendFailed)
         }
+    }
+
+    func testResponseTimeoutStartsAfterSendCompletes() async throws {
+        var completeSend: (@MainActor @Sendable (Bool) -> Void)?
+        let channel = HIDPPChannel(responseTimeout: .milliseconds(20)) { frame, completion in
+            self.sentFrames.append(frame)
+            completeSend = completion
+        }
+        var didFinish = false
+        let pending = Task {
+            defer { didFinish = true }
+            return try await channel.request(deviceIndex: 0xFF, featureIndex: 0x09, function: 1)
+        }
+        await waitForSentFrame()
+        let completion = try XCTUnwrap(completeSend)
+
+        try await Task.sleep(for: .milliseconds(60))
+        XCTAssertFalse(didFinish, "큐 대기·SetReport 중에는 응답 타임아웃이 시작되지 않는다")
+        completion(true)
+
+        do {
+            _ = try await pending.value
+            XCTFail("전송이 끝나도 응답이 없으면 타임아웃이어야 한다")
+        } catch {
+            XCTAssertEqual(error as? HIDPPError, .timeout)
+        }
+    }
+
+    func testDelayedSendFailureThrowsSendFailed() async throws {
+        var completeSend: (@MainActor @Sendable (Bool) -> Void)?
+        let channel = HIDPPChannel(responseTimeout: .milliseconds(20)) { frame, completion in
+            self.sentFrames.append(frame)
+            completeSend = completion
+        }
+        let pending = Task {
+            try await channel.request(deviceIndex: 0xFF, featureIndex: 0x09, function: 1)
+        }
+        await waitForSentFrame()
+        let completion = try XCTUnwrap(completeSend)
+
+        try await Task.sleep(for: .milliseconds(60))
+        completion(false)
+        do {
+            _ = try await pending.value
+            XCTFail("전송 실패가 늦게 돌아와도 sendFailed여야 한다")
+        } catch {
+            XCTAssertEqual(error as? HIDPPError, .sendFailed)
+        }
+    }
+
+    func testReplyBeforeSendCompletionFinishesOnlyOnce() async throws {
+        for isSent in [true, false] {
+            sentFrames = []
+            var completeSend: (@MainActor @Sendable (Bool) -> Void)?
+            let channel = HIDPPChannel { frame, completion in
+                self.sentFrames.append(frame)
+                completeSend = completion
+            }
+            let pending = Task {
+                try await channel.request(deviceIndex: 0xFF, featureIndex: 0x09, function: 1)
+            }
+            await waitForSentFrame()
+            let completion = try XCTUnwrap(completeSend)
+
+            channel.handleReport(report(data: [7]))
+            let payload = try await pending.value
+            XCTAssertEqual(payload.first, 7)
+            completion(isSent)
+        }
+    }
+
+    func testRequestsAreSubmittedInOrderWhileSendCompletionIsPending() async throws {
+        var completions: [@MainActor @Sendable (Bool) -> Void] = []
+        let channel = HIDPPChannel { frame, completion in
+            self.sentFrames.append(frame)
+            completions.append(completion)
+        }
+        let first = Task {
+            try await channel.request(deviceIndex: 0xFF, featureIndex: 0x09, function: 1)
+        }
+        await waitForSentFrame()
+        let second = Task {
+            try await channel.request(deviceIndex: 0xFF, featureIndex: 0x09, function: 2)
+        }
+        await waitForSentFrame(count: 2)
+        XCTAssertEqual(sentFrames.map { $0[3] }, [0x1A, 0x2A])
+        XCTAssertEqual(completions.count, 2)
+        for completion in completions { completion(true) }
+
+        channel.handleReport(report(header: 0x2A, data: [2]))
+        channel.handleReport(report(data: [1]))
+        let firstPayload = try await first.value
+        let secondPayload = try await second.value
+        XCTAssertEqual(firstPayload.first, 1)
+        XCTAssertEqual(secondPayload.first, 2)
     }
 
     func testReportsThatAreNotTheReplyGoToNotificationHandler() async throws {

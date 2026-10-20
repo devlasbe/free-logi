@@ -104,8 +104,6 @@ for repetition in 1; do
     for axes in 'false false' 'true false' 'false true' 'true true'; do
         read -r vertical horizontal <<<"$axes"
         reload_profile "$vertical" "$horizontal" true
-        # 프로필을 다시 읽으면 HID++ divert 동기화가 메인 스레드를 약 7초 막아 타이머가 밀린다(2026-10-20 측정)
-        sleep 8
         expected_vertical=60
         expected_horizontal=-100
         if [ "$vertical" = true ]; then expected_vertical=-60; fi

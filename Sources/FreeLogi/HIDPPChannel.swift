@@ -32,14 +32,25 @@ final class HIDPPChannel {
     // 요청에 맞는 응답이 아닌 모든 HID++ 리포트(버튼 알림, 수신기 알림)가 여기로 온다.
     var onNotification: (([UInt8]) -> Void)?
 
-    private let sendFrame: ([UInt8]) -> Bool
+    private let sendFrame: ([UInt8], @escaping @MainActor @Sendable (Bool) -> Void) -> Void
     private let responseTimeout: Duration
     private var pendingRequests: [Int: PendingRequest] = [:]
     private var nextRequestId = 0
 
-    init(responseTimeout: Duration = .seconds(1), sendFrame: @escaping ([UInt8]) -> Bool) {
+    // 요청 순서대로 전송을 예약하고, 전송이 끝나면 메인에서 한 번 알린다.
+    init(
+        responseTimeout: Duration = .seconds(1),
+        sendFrame: @escaping ([UInt8], @escaping @MainActor @Sendable (Bool) -> Void) -> Void
+    ) {
         self.responseTimeout = responseTimeout
         self.sendFrame = sendFrame
+    }
+
+    convenience init(responseTimeout: Duration = .seconds(1), sendFrame: @escaping ([UInt8]) -> Bool) {
+        self.init(responseTimeout: responseTimeout) { frame, completion in
+            let isSent = sendFrame(frame)
+            completion(isSent)
+        }
     }
 
     // 응답의 파라미터 16바이트를 돌려준다. 같은 기기·feature·function·swId인 응답이 올 때까지 기다린다.
@@ -73,15 +84,19 @@ final class HIDPPChannel {
             nextRequestId += 1
             pendingRequests[requestId] = PendingRequest(frame: frame, continuation: continuation)
 
-            let isSent = sendFrame(frame)
-            if !isSent {
-                finish(requestId, with: .failure(HIDPPError.sendFailed))
-                return
-            }
+            sendFrame(frame) { isSent in
+                // SetReport가 돌아오기 전에 input 콜백으로 응답을 받을 수도 있다.
+                guard self.pendingRequests[requestId] != nil else { return }
+                if !isSent {
+                    self.finish(requestId, with: .failure(HIDPPError.sendFailed))
+                    return
+                }
 
-            Task {
-                try? await Task.sleep(for: responseTimeout)
-                finish(requestId, with: .failure(HIDPPError.timeout))
+                // 큐 대기·SetReport 시간은 빼고, 전송이 끝난 뒤부터 응답을 기다린다.
+                Task {
+                    try? await Task.sleep(for: self.responseTimeout)
+                    self.finish(requestId, with: .failure(HIDPPError.timeout))
+                }
             }
         }
     }
