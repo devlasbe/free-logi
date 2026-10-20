@@ -218,6 +218,10 @@ struct SettingsView: View {
                         model.setScrollReversal(vertical: model.state.reverseVerticalScroll, horizontal: enabled)
                     }
                 ))
+                Toggle("부드러운 스크롤", isOn: Binding(
+                    get: { model.state.smoothScrolling },
+                    set: { model.setSmoothScrolling($0) }
+                ))
                 Spacer()
             }
             .toggleStyle(.checkbox)

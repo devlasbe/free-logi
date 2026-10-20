@@ -123,9 +123,9 @@ final class MappingEngine {
         syncAllChannels()
     }
 
-    func applyScrollReversal(vertical: Bool, horizontal: Bool) {
+    func applyScrollReversal(vertical: Bool, horizontal: Bool, smooth: Bool = false) {
         if isStopped { return }
-        if !vertical && !horizontal {
+        if !vertical && !horizontal && !smooth {
             scrollTap?.stop()
             scrollTap = nil
             return
@@ -136,6 +136,7 @@ final class MappingEngine {
         }
         scrollTap?.reverseVertical = vertical
         scrollTap?.reverseHorizontal = horizontal
+        scrollTap?.smoothScrolling = smooth
     }
 
     // 주기적으로 부른다. 탭이 시스템에 의해 꺼졌으면 다시 켠다.

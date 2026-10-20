@@ -298,7 +298,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     private func applyScrollReversal() {
         guard let state = store?.state else { return }
-        engine?.applyScrollReversal(vertical: state.reverseVerticalScroll, horizontal: state.reverseHorizontalScroll)
+        engine?.applyScrollReversal(vertical: state.reverseVerticalScroll, horizontal: state.reverseHorizontalScroll, smooth: state.smoothScrolling)
     }
 
     // SIGINT·SIGTERM은 일반 종료와 같은 길로 끝낸다(divert를 풀고). SIGHUP은 profiles.json을 다시 읽어 반영한다(디버그).

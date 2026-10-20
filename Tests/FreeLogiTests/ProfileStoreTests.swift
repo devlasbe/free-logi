@@ -31,6 +31,19 @@ final class ProfileStoreTests: XCTestCase {
         }
     }
 
+    func testSmoothScrollingPersistsAcrossProfiles() throws {
+        let store = try ProfileStore(fileURL: tmpURL)
+        XCTAssertFalse(store.state.smoothScrolling)
+        for enabled in [true, false] {
+            try store.setSmoothScrolling(enabled)
+            let profile = try store.add(name: "다른 프로필")
+            try store.setActive(id: profile.id)
+            let reloaded = try ProfileStore(fileURL: tmpURL)
+            XCTAssertEqual(reloaded.state.smoothScrolling, enabled)
+            XCTAssertEqual(reloaded.state, store.state)
+        }
+    }
+
     // 저장 후 재로드 동일성 검증
     func testRoundTrip() throws {
         let store = try ProfileStore(fileURL: tmpURL)
@@ -82,6 +95,7 @@ final class ProfileStoreTests: XCTestCase {
         XCTAssertNil(state.profiles[0].bindings[0].gesture)
         XCTAssertFalse(state.reverseVerticalScroll)
         XCTAssertFalse(state.reverseHorizontalScroll)
+        XCTAssertFalse(state.smoothScrolling)
     }
 
     func testDirectionsCoexistAndUpdateOrRemoveIndependently() throws {

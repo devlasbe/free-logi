@@ -246,6 +246,10 @@ final class SettingsModel: ObservableObject {
         save { try store.setScrollReversal(vertical: vertical, horizontal: horizontal) }
     }
 
+    func setSmoothScrolling(_ enabled: Bool) {
+        save { try store.setSmoothScrolling(enabled) }
+    }
+
     // MARK: - 로그인 시 실행
 
     func setLaunchesAtLogin(_ enabled: Bool) {

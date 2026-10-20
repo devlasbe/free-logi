@@ -94,16 +94,18 @@ struct ProfileStoreState: Codable, Equatable {
     var activeID: UUID
     var reverseVerticalScroll = false
     var reverseHorizontalScroll = false
+    var smoothScrolling = false
 
-    init(profiles: [Profile], activeID: UUID, reverseVerticalScroll: Bool = false, reverseHorizontalScroll: Bool = false) {
+    init(profiles: [Profile], activeID: UUID, reverseVerticalScroll: Bool = false, reverseHorizontalScroll: Bool = false, smoothScrolling: Bool = false) {
         self.profiles = profiles
         self.activeID = activeID
         self.reverseVerticalScroll = reverseVerticalScroll
         self.reverseHorizontalScroll = reverseHorizontalScroll
+        self.smoothScrolling = smoothScrolling
     }
 
     private enum CodingKeys: String, CodingKey {
-        case profiles, activeID, reverseVerticalScroll, reverseHorizontalScroll
+        case profiles, activeID, reverseVerticalScroll, reverseHorizontalScroll, smoothScrolling
     }
 
     init(from decoder: Decoder) throws {
@@ -112,5 +114,6 @@ struct ProfileStoreState: Codable, Equatable {
         activeID = try container.decode(UUID.self, forKey: .activeID)
         reverseVerticalScroll = try container.decodeIfPresent(Bool.self, forKey: .reverseVerticalScroll) ?? false
         reverseHorizontalScroll = try container.decodeIfPresent(Bool.self, forKey: .reverseHorizontalScroll) ?? false
+        smoothScrolling = try container.decodeIfPresent(Bool.self, forKey: .smoothScrolling) ?? false
     }
 }

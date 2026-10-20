@@ -80,6 +80,11 @@ final class ProfileStore {
         try save()
     }
 
+    func setSmoothScrolling(_ enabled: Bool) throws {
+        state.smoothScrolling = enabled
+        try save()
+    }
+
     func setActive(id: UUID) throws {
         state.activeID = id
         try save()
