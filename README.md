@@ -76,6 +76,10 @@ To map another direction, add the same button again and choose an unused directi
 
 Enable `Reverse vertical scrolling` or `Reverse horizontal scrolling` at the bottom of the settings window. Only mouse wheel scrolling is reversed; trackpad scrolling stays as macOS sets it. The setting applies to every profile.
 
+### Smooth scrolling
+
+Enable `Smooth scrolling` at the bottom of the settings window. Each mouse wheel notch is spread over a short animation instead of jumping, like trackpad scrolling. Trackpad scrolling is not changed. It works together with scroll reversal and applies to every profile.
+
 ### Launch at login
 
 Enable `Launch at Login` at the bottom of the settings window.
