@@ -69,6 +69,17 @@ struct ScrollDecay {
 
 let smoothScrollMarker: Int64 = 0x467265654C6F6769
 
+// 휠 이벤트의 point delta는 줄 수 × 10인데, 브라우저(WebKit·Chromium)는 줄 수 × 40px로 스크롤한다.
+// point delta로 보내면 거기서 1/4만 움직이므로 가속이 반영된 줄 수(FixedPtDelta, 16.16)에 40px을 곱한다.
+private let smoothScrollPixelsPerLine = 40.0
+
+func smoothScrollPixels(_ event: CGEvent) -> (vertical: Int64, horizontal: Int64) {
+    func pixels(_ field: CGEventField) -> Int64 {
+        Int64((Double(event.getIntegerValueField(field)) / 65536 * smoothScrollPixelsPerLine).rounded())
+    }
+    return (pixels(.scrollWheelEventFixedPtDeltaAxis1), pixels(.scrollWheelEventFixedPtDeltaAxis2))
+}
+
 func makeSmoothScrollEvent(vertical: Int32, horizontal: Int32, flags: CGEventFlags) -> CGEvent? {
     let event = CGEvent(scrollWheelEvent2Source: nil, units: .pixel, wheelCount: 2,
                         wheel1: vertical, wheel2: horizontal, wheel3: 0)
@@ -193,8 +204,7 @@ private let scrollTapCallback: CGEventTapCallBack = { _, type, event, context in
         event.getIntegerValueField(.scrollWheelEventMomentumPhase) != 0 {
         return Unmanaged.passUnretained(event)
     }
-    let verticalDelta = event.getIntegerValueField(.scrollWheelEventPointDeltaAxis1)
-    let horizontalDelta = event.getIntegerValueField(.scrollWheelEventPointDeltaAxis2)
+    let (verticalDelta, horizontalDelta) = smoothScrollPixels(event)
     let flags = event.flags
     let swallowed = MainActor.assumeIsolated {
         scrollTap.smooth(vertical: verticalDelta, horizontal: horizontalDelta, flags: flags)
