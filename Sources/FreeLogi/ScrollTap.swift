@@ -69,9 +69,9 @@ struct ScrollDecay {
 
 let smoothScrollMarker: Int64 = 0x467265654C6F6769
 
-// 휠 이벤트의 point delta는 줄 수 × 10인데, 브라우저(WebKit·Chromium)는 줄 수 × 40px로 스크롤한다.
-// point delta로 보내면 거기서 1/4만 움직이므로 가속이 반영된 줄 수(FixedPtDelta, 16.16)에 40px을 곱한다.
-private let smoothScrollPixelsPerLine = 40.0
+// 휠 이벤트의 point delta(줄 수 × 10)로 보내면 브라우저에서 적게 움직인다. 줄 수 × 40은 과하다는 사용자 판단으로
+// 가속이 반영된 줄 수(FixedPtDelta, 16.16)에 20px을 곱한다(2026-10-20).
+private let smoothScrollPixelsPerLine = 20.0
 
 func smoothScrollPixels(_ event: CGEvent) -> (vertical: Int64, horizontal: Int64) {
     func pixels(_ field: CGEventField) -> Int64 {

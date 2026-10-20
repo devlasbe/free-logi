@@ -106,10 +106,10 @@ for repetition in 1; do
         reload_profile "$vertical" "$horizontal" true
         # 프로필을 다시 읽으면 HID++ divert 동기화가 메인 스레드를 약 7초 막아 타이머가 밀린다(2026-10-20 측정)
         sleep 8
-        expected_vertical=120
-        expected_horizontal=-200
-        if [ "$vertical" = true ]; then expected_vertical=-120; fi
-        if [ "$horizontal" = true ]; then expected_horizontal=200; fi
+        expected_vertical=60
+        expected_horizontal=-100
+        if [ "$vertical" = true ]; then expected_vertical=-60; fi
+        if [ "$horizontal" = true ]; then expected_horizontal=100; fi
         check_smooth "$expected_vertical" "$expected_horizontal"
     done
     check_event 1 0 '3 30 196608 -5 -50 -327680'

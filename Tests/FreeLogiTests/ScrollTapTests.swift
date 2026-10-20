@@ -64,15 +64,15 @@ final class ScrollTapTests: XCTestCase {
         XCTAssertEqual(event.getIntegerValueField(.scrollWheelEventPointDeltaAxis2), -5)
     }
 
-    func testSmoothScrollPixelsUseLinesTimesForty() throws {
+    func testSmoothScrollPixelsUseLinesTimesTwenty() throws {
         let event = try XCTUnwrap(CGEvent(scrollWheelEvent2Source: nil, units: .line, wheelCount: 2,
                                          wheel1: 0, wheel2: 0, wheel3: 0))
         // 실제 휠에서 본 값: 1.69줄(point 17), -5줄
         event.setIntegerValueField(.scrollWheelEventFixedPtDeltaAxis1, value: 111159)
         event.setIntegerValueField(.scrollWheelEventFixedPtDeltaAxis2, value: -327680)
         let pixels = smoothScrollPixels(event)
-        XCTAssertEqual(pixels.vertical, 68)
-        XCTAssertEqual(pixels.horizontal, -200)
+        XCTAssertEqual(pixels.vertical, 34)
+        XCTAssertEqual(pixels.horizontal, -100)
     }
 
     func testFinishDrainsAndCanStartAgain() {
