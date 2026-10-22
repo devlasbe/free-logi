@@ -2,11 +2,6 @@ import Foundation
 
 private let timeoutExitCode: Int32 = 2
 
-func printToStandardError(_ message: String) {
-    let line = Data((message + "\n").utf8)
-    FileHandle.standardError.write(line)
-}
-
 // 디버그(--capture [초]): 인식 모드로 버튼 하나를 기다려 stdout에 `standard(3)` / `hidpp(0x0053)`로 출력한다.
 // 로그는 stderr. 시간이 지나거나 SIGINT/SIGTERM을 받으면 인식 모드를 끝내 divert를 되돌리고 종료 코드 2로 끝난다.
 @MainActor
